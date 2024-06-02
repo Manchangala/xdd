@@ -1,13 +1,14 @@
+# quillas_bakery/urls.py
+
 from django.contrib import admin
-from django.urls import path, include
-from django.contrib.auth import views as auth_views
+from django.urls import path
 from clientes import views as cliente_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', cliente_views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(template_name='clientes/login.html', redirect_authenticated_user=True), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='clientes/logout.html'), name='logout'),
-    path('productos/', cliente_views.productos, name='productos'),  # Nueva vista de productos
-    path('', include('clientes.urls')),  # Incluir las URLs de la app de clientes
+    path('login/', cliente_views.login_view, name='login'),
+    path('productos/', cliente_views.productos, name='productos'),
+    path('producto/<int:producto_id>/', cliente_views.detalles_producto, name='detalles_producto'),
+    path('pedido/', cliente_views.PedidoWizard.as_view(), name='realizar_pedido'),
 ]

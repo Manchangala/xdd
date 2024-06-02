@@ -1,38 +1,36 @@
+# clientes/models.py
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Cliente(AbstractUser):
-    direccion = models.CharField(max_length=255)
-    telefono = models.CharField(max_length=20)
-    # Puedes agregar más campos si es necesario
+    nombre = models.CharField(max_length=100, default='default_nombre')
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.username
+        return self.nombre
 
 class Producto(models.Model):
-    codigo = models.CharField(max_length=100, unique=True)
-    nombre = models.CharField(max_length=255)
+    nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
-    categoria = models.CharField(max_length=100)
+    codigo = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.nombre
 
 class Pedido(models.Model):
-    ESTADO_PEDIDO_CHOICES = (
-        ('P', 'Pendiente'),
-        ('C', 'Completado'),
-    )
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField()
+    cantidad = models.IntegerField()
+    direccion = models.CharField(max_length=100, default='default_direccion')
+    telefono = models.CharField(max_length=20, default='0000000000')
     peticiones_especiales = models.TextField(blank=True, null=True)
-    entrega = models.CharField(max_length=50, choices=[('D', 'Domicilio'), ('R', 'Recogida en tienda')])
-    metodo_pago = models.CharField(max_length=50, choices=[('E', 'Efectivo'), ('T', 'Tarjeta')])
-    estado = models.CharField(max_length=1, choices=ESTADO_PEDIDO_CHOICES, default='P')
-    fecha_pedido = models.DateTimeField(auto_now_add=True)
-    fecha_entrega = models.DateTimeField(blank=True, null=True)
+    tipo_entrega = models.CharField(max_length=50, default='recoger')
+    metodo_pago = models.CharField(max_length=100)
+    detalles_pago = models.TextField(blank=True, null=True)
+    estado = models.CharField(max_length=20, default='Pendiente')
 
     def __str__(self):
-        return f"Pedido {self.id} de {self.cliente.username}"
+        return f"Pedido {self.id} de {self.cliente.nombre}"
