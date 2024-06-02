@@ -10,43 +10,41 @@ class ClienteCreationForm(UserCreationForm):
 
 from .models import Pedido, Producto, Cliente
 
-class SeleccionProductoForm(forms.ModelForm):
-    class Meta:
-        model = Pedido
-        fields = ['producto', 'cantidad']
-        widgets = {
-            'producto': forms.Select(attrs={'class': 'form-control'}),
-            'cantidad': forms.NumberInput(attrs={'class': 'form-control'}),
-        }
+class SeleccionProductoForm(forms.Form):
+    productos = forms.ModelMultipleChoiceField(
+        queryset=Producto.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+    )
+    cantidades = forms.CharField(widget=forms.HiddenInput(), required=True)
 
-class ConfirmacionPedidoForm(forms.ModelForm):
-    class Meta:
-        model = Pedido
-        fields = ['peticiones_especiales']
-        widgets = {
-            'peticiones_especiales': forms.Textarea(attrs={'class': 'form-control'}),
-        }
-
-class EleccionEntregaForm(forms.ModelForm):
-    class Meta:
-        model = Pedido
-        fields = ['entrega']
-        widgets = {
-            'entrega': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-class PagoForm(forms.ModelForm):
-    class Meta:
-        model = Pedido
-        fields = ['metodo_pago']
-        widgets = {
-            'metodo_pago': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-class RegistroForm(UserCreationForm):
+class ConfirmacionPedidoForm(forms.Form):
     direccion = forms.CharField(max_length=255, required=True)
-    telefono = forms.CharField(max_length=20, required=True)
+    telefono = forms.CharField(maxlength=20, required=True)
+    peticiones_especiales = forms.CharField(widget=forms.Textarea, required=False)
 
+
+class EleccionEntregaForm(forms.Form):
+    OPCIONES_ENTREGA = [
+        ('recoger', 'Recoger en tienda'),
+        ('entrega', 'Entrega a domicilio')
+    ]
+    recogida_entrega = forms.ChoiceField(choices=OPCIONES_ENTREGA, required=True)
+
+class PagoForm(forms.Form):
+    metodo_pago = forms.ChoiceField(
+        choices=[('tarjeta', 'Tarjeta de Crédito/Débito'), ('efectivo', 'Efectivo')],
+        required=True
+    )
+    numero_tarjeta = forms.CharField(max_length=16, required=False)
+    nombre_titular = forms.CharField(max_length=100, required=False)
+    cvv = forms.CharField(max_length=3, required=False)
+    fecha_expiracion = forms.DateField(required=False)
+
+class RegistroForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ('username', 'direccion', 'telefono', 'password1', 'password2')
+        fields = ['username', 'password', 'direccion', 'telefono']
+        widgets = {
+            'password': forms.PasswordInput(),
+        }

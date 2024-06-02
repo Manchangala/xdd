@@ -1,0 +1,15 @@
+<!-- clientes/templates/clientes/pago.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pagar</title>
+</head>
+<body>
+    <h1>Pagar</h1>
+    <form method="post">{% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.as_p }}
+        <button type="submit">Finalizar Pedido</button>
+    </form>
+</body>
+</html>

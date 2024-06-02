@@ -1,0 +1,15 @@
+<!-- clientes/templates/clientes/confirmacion_pedido.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmar Pedido</title>
+</head>
+<body>
+    <h1>Confirmar Pedido</h1>
+    <form method="post">{% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.as_p }}
+        <button type="submit">Siguiente</button>
+    </form>
+</body>
+</html>

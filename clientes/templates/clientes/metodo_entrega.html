@@ -1,0 +1,15 @@
+<!-- clientes/templates/clientes/metodo_entrega.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seleccionar Método de Entrega</title>
+</head>
+<body>
+    <h1>Seleccionar Método de Entrega</h1>
+    <form method="post">{% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.as_p }}
+        <button type="submit">Siguiente</button>
+    </form>
+</body>
+</html>

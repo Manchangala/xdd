@@ -2,6 +2,67 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto, Pedido
 from .forms import SeleccionProductoForm, ConfirmacionPedidoForm, EleccionEntregaForm, PagoForm, RegistroForm
 from django.contrib.auth import login, authenticate
+# clientes/views.py
+
+from django.shortcuts import render
+from formtools.wizard.views import SessionWizardView
+from .forms import SeleccionProductoForm, ConfirmacionPedidoForm, RecogerODomicilioForm, PagoForm
+
+FORMS = [
+    ("seleccion", SeleccionProductoForm),
+    ("confirmacion", ConfirmacionPedidoForm),
+    ("metodo_entrega", RecogerODomicilioForm),
+    ("pago", PagoForm)
+]
+
+TEMPLATES = {
+    "seleccion": "clientes/seleccion_producto.html",
+    "confirmacion": "clientes/confirmacion_pedido.html",
+    "metodo_entrega": "clientes/metodo_entrega.html",
+    "pago": "clientes/pago.html"
+}
+
+from .models import Pedido, Producto, Cliente
+
+class PedidoWizard(SessionWizardView):
+    template_name = "clientes/pedido_wizard.html"
+    
+    def done(self, form_list, **kwargs):
+        # Recopilar datos del formulario
+        form_data = [form.cleaned_data for form in form_list]
+        
+        # Extraer datos del formulario
+        productos_data = form_data[0]['productos']
+        cantidades_data = form_data[0]['cantidades']
+        direccion = form_data[1]['direccion']
+        telefono = form_data[1]['telefono']
+        recogida_entrega = form_data[2]['recogida_entrega']
+        peticiones_especiales = form_data[1]['peticiones_especiales']
+        
+        # Obtener el cliente actual
+        cliente = Cliente.objects.get(user=self.request.user)
+        
+        # Crear el pedido
+        pedido = Pedido(
+            cliente=cliente,
+            direccion=direccion,
+            telefono=telefono,
+            recogida_entrega=recogida_entrega,
+            peticiones_especiales=peticiones_especiales,
+            estado='pendiente'
+        )
+        pedido.save()
+        
+        # Agregar productos al pedido
+        for producto_id, cantidad in zip(productos_data, cantidades_data):
+            producto = Producto.objects.get(id=producto_id)
+            pedido.productos.add(producto, through_defaults={'cantidad': cantidad})
+        
+        return render(self.request, 'clientes/pedido_completado.html', {
+            'form_data': form_data,
+            'pedido': pedido
+        })
+
 
 def home(request):
     return render(request, 'clientes/home.html')

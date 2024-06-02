@@ -1,0 +1,17 @@
+<!-- clientes/templates/clientes/pedido_completado.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pedido Completado</title>
+</head>
+<body>
+    <h1>Pedido Completado</h1>
+    <p>¡Tu pedido ha sido completado con éxito!</p>
+    <p>Detalles del pedido:</p>
+    <ul>
+        {% for form_data in form_data %}
+            <li>{{ form_data }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
