@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Realizar Pedido - QUILLA's BAKERY</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center">Realizar Pedido - {{ producto.nombre }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                        <div class="card-header bg-danger text-white">Paso 1: Selección del Producto</div>
+                        <div class="card-body">
+                            {{ seleccion_form.as_p }}
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header bg-danger text-white">Paso 2: Confirmación y Personalización</div>
+                        <div class="card-body">
+                            {{ confirmacion_form.as_p }}
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header bg-danger text-white">Paso 3: Elegir Entrega o Recogida</div>
+                        <div class="card-body">
+                            {{ entrega_form.as_p }}
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header bg-danger text-white">Paso 4: Pago y Finalización del Pedido</div>
+                        <div class="card-body">
+                            {{ pago_form.as_p }}
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Completar Pedido</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

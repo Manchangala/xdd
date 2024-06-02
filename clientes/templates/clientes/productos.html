@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Productos - QUILLA's BAKERY</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center">Productos Disponibles</h1>
+        <div class="row">
+            {% for producto in productos %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ producto.nombre }}</h5>
+                            <p class="card-text">{{ producto.descripcion }}</p>
+                            <p class="card-text">Precio: {{ producto.precio }}</p>
+                            <a href="{% url 'detalles_producto' producto.id %}" class="btn btn-info">Ver Detalles</a>
+                            <a href="{% url 'realizar_pedido' producto.id %}" class="btn btn-primary">Realizar Pedido</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
